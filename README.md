@@ -234,7 +234,7 @@ If you find this project helpful, please consider:
 - 🐛 Reporting bugs and issues
 - 💡 Suggesting new features
 - 🤝 Contributing to the codebase
-- 📢 Sharing with the community
+- 📢 Sharin with the community
 
 ---
 
