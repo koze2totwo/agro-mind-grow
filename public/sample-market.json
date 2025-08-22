@@ -1,0 +1,17 @@
+{
+  "updated": "2025-08-21T00:00:00Z",
+  "count": 8,
+  "records": [
+    {"state":"Uttar Pradesh","district":"Lucknow","market":"Lucknow","commodity":"Wheat","variety":"FAQ","arrival_date":"2025-08-21","min_price":2150,"max_price":2350,"modal_price":2250,"unit_of_price":"per quintal"},
+    {"state":"Punjab","district":"Ludhiana","market":"Ludhiana","commodity":"Rice","variety":"Paddy","arrival_date":"2025-08-20","min_price":1900,"max_price":2100,"modal_price":2000,"unit_of_price":"per quintal"},
+    {"state":"Madhya Pradesh","district":"Indore","market":"Indore","commodity":"Soyabean","variety":"Black","arrival_date":"2025-08-21","min_price":4200,"max_price":4600,"modal_price":4400,"unit_of_price":"per quintal"},
+    {"state":"Gujarat","district":"Rajkot","market":"Rajkot","commodity":"Cotton","variety":"Kapas","arrival_date":"2025-08-19","min_price":5600,"max_price":6000,"modal_price":5800,"unit_of_price":"per quintal"},
+    {"state":"Uttar Pradesh","district":"Varanasi","market":"Varanasi","commodity":"Gram","variety":"Channa","arrival_date":"2025-08-18","min_price":4800,"max_price":5200,"modal_price":5000,"unit_of_price":"per quintal"},
+    {"state":"Uttar Pradesh","district":"Kanpur","market":"Kanpur","commodity":"Arhar Dal","variety":"Tur","arrival_date":"2025-08-20","min_price":6500,"max_price":7000,"modal_price":6750,"unit_of_price":"per quintal"},
+    {"state":"Punjab","district":"Amritsar","market":"Amritsar","commodity":"Wheat","variety":"FAQ","arrival_date":"2025-08-20","min_price":2200,"max_price":2400,"modal_price":2300,"unit_of_price":"per quintal"},
+    {"state":"Gujarat","district":"Ahmedabad","market":"Ahmedabad","commodity":"Maize","variety":"Yellow","arrival_date":"2025-08-21","min_price":1800,"max_price":2000,"modal_price":1900,"unit_of_price":"per quintal"}
+  ]
+}
+
+
+

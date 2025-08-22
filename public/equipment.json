@@ -1,0 +1,16 @@
+[
+  {"id":1,"name":"Mahindra 275 DI Tractor","brand":"Mahindra","category":"Tractors","priceINR":650000,"rating":4.5,"reviews":128,"features":["35 HP Engine","Dual Clutch","Power Steering"],"image":"🚜","availability":"In Stock","financing":"EMI Available"},
+  {"id":2,"name":"John Deere S550 Combine","brand":"John Deere","category":"Harvesters","priceINR":4500000,"rating":4.8,"reviews":67,"features":["170 HP","Grain Tank 8900L","Auto Guidance"],"image":"🌾","availability":"Pre-order","financing":"Lease Available"},
+  {"id":3,"name":"Jain Drip Irrigation Kit","brand":"Jain","category":"Irrigation","priceINR":25000,"rating":4.3,"reviews":234,"features":["1 Acre Coverage","Pressure Compensated","Self Flushing"],"image":"💧","availability":"In Stock","financing":"Subsidy Available"},
+  {"id":4,"name":"Kubota Rotavator RT125","brand":"Kubota","category":"Tillage","priceINR":120000,"rating":4.6,"reviews":89,"features":["4 Feet Width","Heavy Duty Blades","Adjustable Depth"],"image":"🪓","availability":"In Stock","financing":"EMI Available"},
+  {"id":5,"name":"Power Sprayer 16L","brand":"Kisan Kraft","category":"Hand Tools","priceINR":4200,"rating":4.2,"reviews":350,"features":["16L Tank","High Pressure","2 Nozzles"],"image":"🔧","availability":"In Stock","financing":""},
+  {"id":6,"name":"Seed Drill 9 Tyne","brand":"Swaraj","category":"Seeding","priceINR":78000,"rating":4.1,"reviews":58,"features":["9 Tyne","Adjustable Spacing","Robust Frame"],"image":"🌱","availability":"In Stock","financing":"EMI Available"},
+  {"id":7,"name":"Solar Pump 5HP","brand":"Waaree","category":"Irrigation","priceINR":280000,"rating":4.4,"reviews":76,"features":["MNRE Approved","Remote Monitor","5HP"],"image":"💧","availability":"In Stock","financing":"Subsidy Available"},
+  {"id":8,"name":"Mini Combine Harvester","brand":"Greaves","category":"Harvesters","priceINR":1250000,"rating":4.0,"reviews":44,"features":["Compact","Low Fuel","Multi-crop"],"image":"🌾","availability":"In Stock","financing":"EMI Available"},
+  {"id":9,"name":"Disc Plough 2 Furrow","brand":"Fieldking","category":"Tillage","priceINR":95000,"rating":4.3,"reviews":63,"features":["2 Furrow","High Carbon Steel","Category II"],"image":"🪓","availability":"In Stock","financing":"EMI Available"},
+  {"id":10,"name":"Tractor Trailer 5 Ton","brand":"Sonalika","category":"Tractors","priceINR":210000,"rating":4.1,"reviews":40,"features":["5T Capacity","Hydraulic","Heavy Duty"],"image":"🚜","availability":"In Stock","financing":"EMI Available"},
+  {"id":11,"name":"Zero Till Seed Drill","brand":"John Deere","category":"Seeding","priceINR":165000,"rating":4.5,"reviews":52,"features":["Zero Till","Multi Crop","Low Draft"],"image":"🌱","availability":"In Stock","financing":"EMI Available"},
+  {"id":12,"name":"Brush Cutter 52cc","brand":"Stihl","category":"Hand Tools","priceINR":12500,"rating":4.6,"reviews":410,"features":["52cc","2-Stroke","Nylon/Blade"],"image":"🔧","availability":"In Stock","financing":""}
+]
+
+
