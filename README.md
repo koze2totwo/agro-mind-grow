@@ -105,7 +105,7 @@ AgroMind Grow is a revolutionary web-based smart agriculture platform designed t
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/agro-mind-grow.git
+   git clone https://github.com/mayank8868/agro-mind-grow.git
    cd agro-mind-grow
    ```
 
@@ -219,10 +219,6 @@ We welcome contributions from the community! Please read our [Contributing Guide
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🙏 Acknowledgments
 
 - **Farmers Community** - For providing valuable feedback and insights
@@ -230,13 +226,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Open Source Community** - For the amazing tools and libraries
 - **React Team** - For the excellent frontend framework
 - **Vite Team** - For the lightning-fast build tool
-
-## 📞 Contact & Support
-
-- **Project Lead**: [Your Name]
-- **Email**: [your.email@example.com]
-- **Demo**: [Live Demo Link]
-- **Documentation**: [Documentation Link]
 
 ## 🌟 Show Your Support
 
