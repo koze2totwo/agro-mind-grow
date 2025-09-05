@@ -12,7 +12,18 @@ import {
   BookOpen,
   Leaf
 } from "lucide-react";
-
+import "./side.css"
+const showSidebar= () => {
+  const sidebar=document.querySelector('#sidebar') as HTMLDivElement;
+  sidebar.style.display = 'flex';
+ 
+  
+}
+const closeSidebar = () => {
+  const sidebar=document.querySelector('#sidebar') as HTMLDivElement;
+  sidebar.style.display = 'none';
+  
+}
 const Navigation = () => {
   const location = useLocation();
 
@@ -40,7 +51,29 @@ const Navigation = () => {
             </span>
           </Link>
           
-          <div id="navbar" className="hidden md:flex items-center space-x-1 overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none" >
+          <div className="flex items-center space-x-1 overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none" >
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.to;
+              
+              return (
+                <Link key={item.to} to={item.to}>
+                  <Button id="hideOnMobile"
+                    variant={isActive ? "default" : "ghost"}
+                    size="sm"
+                    className="flex items-center space-x-2 "
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{item.label}</span>
+                  </Button>
+                </Link>
+              );
+            })}
+            <li id="menu" className="md-hidden" onClick={()=>showSidebar()}><a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#141010ff"><path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg></a></li>
+          </div>
+
+           <div id="sidebar" className="hidden md:flex items-center space-x-1 overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none" >
+              <li onClick={()=>closeSidebar()}><a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#080808ff"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></a></li>
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.to;
@@ -53,19 +86,14 @@ const Navigation = () => {
                     className="flex items-center space-x-2 "
                   >
                     <Icon className="h-4 w-4" />
-                    <span className="hidden lg:inline">{item.label}</span>
+                    <span >{item.label}</span>
                   </Button>
                 </Link>
               );
             })}
           </div>
 
-          <div className="md:hidden">
-            <Button variant="ghost" size="sm">
-              <span className="sr-only">Open menu</span>
-              ☰
-            </Button>
-          </div>
+       
         </div>
       </div>
     </nav>
