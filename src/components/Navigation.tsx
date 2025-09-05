@@ -35,12 +35,12 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center space-x-2">
             <Leaf className="h-8 w-8 text-primary" />
-            <span className="font-bold text-xl bg-gradient-primary bg-clip-text text-transparent">
+            <span className="font-bold text-xl bg-gradient-primary bg-clip-text text-transparent pr-6">
               AgroMind
             </span>
           </Link>
           
-          <div className="hidden md:flex items-center space-x-1">
+          <div id="navbar" className="hidden md:flex items-center space-x-1 overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none" >
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.to;
@@ -50,7 +50,7 @@ const Navigation = () => {
                   <Button
                     variant={isActive ? "default" : "ghost"}
                     size="sm"
-                    className="flex items-center space-x-2"
+                    className="flex items-center space-x-2 "
                   >
                     <Icon className="h-4 w-4" />
                     <span className="hidden lg:inline">{item.label}</span>

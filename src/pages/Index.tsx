@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import agricultureHero from "@/assets/agriculture-hero.jpg";
 
+
 const Index = () => {
   const features = [
     {
