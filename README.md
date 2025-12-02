@@ -137,7 +137,8 @@ python api.py
 The API will start at `http://localhost:8000`.
 
 *(Optional) Train the Model:*
-If you wish to retrain the model:
+
+If you wish to retrain the model and don't train in virtual environment:
 ```powershell
 python train.py
 ```
