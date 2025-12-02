@@ -151,7 +151,11 @@ Open a new terminal window (keep the backend running) and navigate to the projec
 ```powershell
 npm install
 ```
+**Install Vite:**
 
+```powershell
+npm install shadcn@latest vite
+```
 **Start the Application:**
 
 You can use the provided batch script for a quick start:
