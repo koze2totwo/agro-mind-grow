@@ -8,3 +8,6 @@ scikit-learn>=1.0.0
 tqdm>=4.64.0
 opencv-python>=4.5.0
 efficientnet-pytorch>=0.7.1
+python-multipart>=0.0.20
+fastapi
+uvicorn
