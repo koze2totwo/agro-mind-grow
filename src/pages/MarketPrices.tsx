@@ -58,7 +58,6 @@ const MarketPrices = () => {
   }
 
   function parseDateFlex(d: string): number {
-    // Returns ms since epoch; supports YYYY-MM-DD and DD-MM-YYYY
     const iso = Date.parse(d);
     if (!Number.isNaN(iso)) return iso;
     const m = d.match(/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/);
@@ -107,109 +106,137 @@ const MarketPrices = () => {
   }, [filtered]);
 
   return (
-    <div className="min-h-screen bg-background">
-
-      <div className="w-full px-4 py-8">
-        <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-          <h1 className="text-3xl font-bold">Market Prices</h1>
-          <div>
-            <Select value={stateFilter} onValueChange={setStateFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="All States" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All States</SelectItem>
-                <SelectItem value="Punjab">Punjab</SelectItem>
-                <SelectItem value="Uttar Pradesh">Uttar Pradesh</SelectItem>
-                <SelectItem value="Haryana">Haryana</SelectItem>
-                <SelectItem value="Gujarat">Gujarat</SelectItem>
-                <SelectItem value="Madhya Pradesh">Madhya Pradesh</SelectItem>
-                <SelectItem value="Rajasthan">Rajasthan</SelectItem>
-                <SelectItem value="Maharashtra">Maharashtra</SelectItem>
-                <SelectItem value="Andhra Pradesh">Andhra Pradesh</SelectItem>
-                <SelectItem value="Assam">Assam</SelectItem>
-                <SelectItem value="Bihar">Bihar</SelectItem>
-                <SelectItem value="Karnataka">Karnataka</SelectItem>
-                <SelectItem value="Tamil Nadu">Tamil Nadu</SelectItem>
-                <SelectItem value="Telangana">Telangana</SelectItem>
-                <SelectItem value="West Bengal">West Bengal</SelectItem>
-                <SelectItem value="Odisha">Odisha</SelectItem>
-                <SelectItem value="Chhattisgarh">Chhattisgarh</SelectItem>
-                <SelectItem value="Jharkhand">Jharkhand</SelectItem>
-                <SelectItem value="Uttarakhand">Uttarakhand</SelectItem>
-                <SelectItem value="Himachal Pradesh">Himachal Pradesh</SelectItem>
-                <SelectItem value="Jammu and Kashmir">Jammu and Kashmir</SelectItem>
-                <SelectItem value="Kerala">Kerala</SelectItem>
-                <SelectItem value="Delhi">Delhi</SelectItem>
-                <SelectItem value="Chandigarh">Chandigarh</SelectItem>
-              </SelectContent>
-            </Select>
+    <div className="min-h-screen bg-gradient-to-br from-green-50/50 via-emerald-50/30 to-teal-50/50 dark:from-green-950/10 dark:via-emerald-950/10 dark:to-teal-950/10">
+      <div className="w-full px-4 py-8 max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8 text-center md:text-left">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-950/30 rounded-full mb-4">
+            <BarChart3 className="w-4 h-4 text-green-600" />
+            <span className="text-sm font-medium text-green-900 dark:text-green-100">Live Market Intelligence</span>
           </div>
-          <div className="text-right">
-            <div className="flex gap-2 justify-end">
-              <Button onClick={() => { setPage((p) => Math.max(0, p - 1)); load(); }} variant="outline" disabled={loading || page === 0}>Prev</Button>
-              <Button onClick={() => { setPage((p) => p + 1); load(); }} variant="outline" disabled={loading}>Next</Button>
-              <Button onClick={load} variant="outline" disabled={loading}>
-                <RefreshCcw className="h-4 w-4 mr-2" /> Refresh
-              </Button>
-            </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500 bg-clip-text text-transparent">
+            Market Prices
+          </h1>
+          <p className="text-muted-foreground text-lg mb-6">
+            Real-time commodity prices and market trends to maximize your profits
+          </p>
+        </div>
+
+        {/* Filters */}
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Select value={stateFilter} onValueChange={setStateFilter}>
+            <SelectTrigger>
+              <SelectValue placeholder="All States" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All States</SelectItem>
+              <SelectItem value="Punjab">Punjab</SelectItem>
+              <SelectItem value="Uttar Pradesh">Uttar Pradesh</SelectItem>
+              <SelectItem value="Haryana">Haryana</SelectItem>
+              <SelectItem value="Gujarat">Gujarat</SelectItem>
+              <SelectItem value="Madhya Pradesh">Madhya Pradesh</SelectItem>
+              <SelectItem value="Rajasthan">Rajasthan</SelectItem>
+              <SelectItem value="Maharashtra">Maharashtra</SelectItem>
+              <SelectItem value="Andhra Pradesh">Andhra Pradesh</SelectItem>
+              <SelectItem value="Assam">Assam</SelectItem>
+              <SelectItem value="Bihar">Bihar</SelectItem>
+              <SelectItem value="Karnataka">Karnataka</SelectItem>
+              <SelectItem value="Tamil Nadu">Tamil Nadu</SelectItem>
+              <SelectItem value="Telangana">Telangana</SelectItem>
+              <SelectItem value="West Bengal">West Bengal</SelectItem>
+              <SelectItem value="Odisha">Odisha</SelectItem>
+              <SelectItem value="Chhattisgarh">Chhattisgarh</SelectItem>
+              <SelectItem value="Jharkhand">Jharkhand</SelectItem>
+              <SelectItem value="Uttarakhand">Uttarakhand</SelectItem>
+              <SelectItem value="Himachal Pradesh">Himachal Pradesh</SelectItem>
+              <SelectItem value="Jammu and Kashmir">Jammu and Kashmir</SelectItem>
+              <SelectItem value="Kerala">Kerala</SelectItem>
+              <SelectItem value="Delhi">Delhi</SelectItem>
+              <SelectItem value="Chandigarh">Chandigarh</SelectItem>
+            </SelectContent>
+          </Select>
+          <div />
+          <div className="flex gap-2 justify-end">
+            <Button onClick={() => { setPage((p) => Math.max(0, p - 1)); load(); }} variant="outline" disabled={loading || page === 0}>Prev</Button>
+            <Button onClick={() => { setPage((p) => p + 1); load(); }} variant="outline" disabled={loading}>Next</Button>
+            <Button onClick={load} variant="outline" disabled={loading}>
+              <RefreshCcw className="h-4 w-4 mr-2" /> Refresh
+            </Button>
           </div>
         </div>
 
-        <Card className="mb-6">
+        {/* Search Card */}
+        <Card className="mb-6 border-0 shadow-xl bg-gradient-to-br from-white to-green-50 dark:from-gray-800 dark:to-green-950/20 hover:shadow-2xl transition-shadow">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Search className="h-4 w-4" /> Search by commodity, market, district, or state
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
+                <Search className="h-5 w-5 text-white" />
+              </div>
+              Search Market Data
             </CardTitle>
+            <p className="text-sm text-muted-foreground">Search by commodity, market, district, or state</p>
           </CardHeader>
           <CardContent>
             <Input
               placeholder="e.g., Wheat, Soyabean, Indore, Punjab"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              className="h-12"
             />
           </CardContent>
         </Card>
 
-        <Card>
+        {/* Market Stats and Data */}
+        <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-emerald-50 dark:from-gray-800 dark:to-emerald-950/20">
           <CardHeader>
-            <CardTitle className="text-lg">Latest Market Rates</CardTitle>
+            <CardTitle className="text-2xl">Latest Market Rates</CardTitle>
+            <p className="text-muted-foreground">Live commodity prices across India</p>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
-              <div className="p-3 border rounded-lg">
-                <div className="flex items-center justify-between text-sm text-muted-foreground mb-1">
-                  <span>Price Up</span>
-                  <TrendingUp className="h-4 w-4 text-green-600" />
+            {/* Stats Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="p-5 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl border border-green-200 dark:border-green-900 hover:scale-105 transition-transform">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-green-700 dark:text-green-300">Price Up</span>
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="h-5 w-5 text-white" />
+                  </div>
                 </div>
-                <div className="text-2xl font-bold text-green-700">{stats.up}</div>
+                <div className="text-3xl font-bold text-green-700 dark:text-green-300">{stats.up}</div>
               </div>
-              <div className="p-3 border rounded-lg">
-                <div className="flex items-center justify-between text-sm text-muted-foreground mb-1">
-                  <span>Price Down</span>
-                  <TrendingDown className="h-4 w-4 text-red-600" />
+              <div className="p-5 bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-950/30 dark:to-rose-950/30 rounded-xl border border-red-200 dark:border-red-900 hover:scale-105 transition-transform">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-red-700 dark:text-red-300">Price Down</span>
+                  <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-rose-500 rounded-lg flex items-center justify-center">
+                    <TrendingDown className="h-5 w-5 text-white" />
+                  </div>
                 </div>
-                <div className="text-2xl font-bold text-red-700">{stats.down}</div>
+                <div className="text-3xl font-bold text-red-700 dark:text-red-300">{stats.down}</div>
               </div>
-              <div className="p-3 border rounded-lg">
-                <div className="flex items-center justify-between text-sm text-muted-foreground mb-1">
-                  <span>Stable</span>
-                  <Minus className="h-4 w-4 text-gray-600" />
+              <div className="p-5 bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-950/30 dark:to-slate-950/30 rounded-xl border border-gray-200 dark:border-gray-700 hover:scale-105 transition-transform">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Stable</span>
+                  <div className="w-10 h-10 bg-gradient-to-br from-gray-500 to-slate-500 rounded-lg flex items-center justify-center">
+                    <Minus className="h-5 w-5 text-white" />
+                  </div>
                 </div>
-                <div className="text-2xl font-bold">{stats.flat}</div>
+                <div className="text-3xl font-bold text-gray-700 dark:text-gray-300">{stats.flat}</div>
               </div>
-              <div className="p-3 border rounded-lg">
-                <div className="flex items-center justify-between text-sm text-muted-foreground mb-1">
-                  <span>Avg. Price</span>
-                  <BarChart3 className="h-4 w-4 text-blue-600" />
+              <div className="p-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 rounded-xl border border-blue-200 dark:border-blue-900 hover:scale-105 transition-transform">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Avg. Price</span>
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="h-5 w-5 text-white" />
+                  </div>
                 </div>
-                <div className="text-2xl font-bold">₹{stats.avg ? stats.avg.toLocaleString('en-IN') : '--'}</div>
+                <div className="text-3xl font-bold text-blue-700 dark:text-blue-300">₹{stats.avg ? stats.avg.toLocaleString('en-IN') : '--'}</div>
                 <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
                   {stats.latestDate ? `Latest: ${stats.latestDate}` : 'No date'}
                 </div>
               </div>
             </div>
+
             {error && (
               <div className="p-3 rounded border border-destructive text-destructive mb-4 text-sm">{error}</div>
             )}
@@ -219,19 +246,25 @@ const MarketPrices = () => {
             {!loading && !error && filtered.length === 0 && (
               <div className="text-sm text-muted-foreground">No records found. Try a different search.</div>
             )}
+
+            {/* Market Data List */}
             <div className="grid gap-3">
               {filtered.map((r, idx) => (
-                <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-2 p-3 border rounded-lg">
-                  <div className="md:col-span-3 font-semibold">
+                <div key={idx} className="group grid grid-cols-1 md:grid-cols-12 gap-3 p-4 bg-gradient-to-br from-white to-green-50/30 dark:from-gray-800 dark:to-green-950/10 border border-green-100 dark:border-green-900 rounded-xl hover:shadow-md hover:border-green-300 dark:hover:border-green-700 transition-all">
+                  <div className="md:col-span-3 font-semibold flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     {r.commodity}{r.variety ? ` • ${r.variety}` : ""}
                   </div>
                   <div className="md:col-span-4 text-sm text-muted-foreground flex items-center gap-2">
-                    <MapPin className="h-3 w-3" />
+                    <MapPin className="h-4 w-4 text-green-600" />
                     {r.market}, {r.district}, {r.state}
                   </div>
-                  <div className="md:col-span-2 text-sm text-muted-foreground">{r.arrival_date}</div>
+                  <div className="md:col-span-2 text-sm text-muted-foreground flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    {r.arrival_date}
+                  </div>
                   <div className="md:col-span-3 text-right">
-                    <div className="text-xl font-bold">₹{formatINR(r.modal_price ?? r.max_price ?? r.min_price)}</div>
+                    <div className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">₹{formatINR(r.modal_price ?? r.max_price ?? r.min_price)}</div>
                     <div className="text-xs text-muted-foreground">{r.unit_of_price || "per quintal"}</div>
                   </div>
                 </div>

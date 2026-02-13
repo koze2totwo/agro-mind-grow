@@ -158,16 +158,20 @@ const PestControl = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-green-950/20 dark:to-background p-4 md:p-8">
-      <div className="max-w-5xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-green-50/50 via-emerald-50/30 to-teal-50/50 dark:from-green-950/10 dark:via-emerald-950/10 dark:to-teal-950/10">
+      <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
 
-        {/* Header */}
+        {/* Modern Header */}
         <div className="text-center space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-green-800 dark:text-green-400 tracking-tight">
-            Plant Doctor AI
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-950/30 rounded-full mb-4">
+            <Bug className="w-4 h-4 text-green-600" />
+            <span className="text-sm font-medium text-green-900 dark:text-green-100">AI-Powered Diagnosis</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500 bg-clip-text text-transparent">
+            Plant Disease Detection
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Upload a photo of your plant to instantly identify diseases and get expert treatment recommendations.
+            Upload a photo of your plant to instantly identify diseases and get expert treatment recommendations powered by AI
           </p>
         </div>
 
@@ -175,22 +179,23 @@ const PestControl = () => {
 
           {/* Left Column: Upload & Controls */}
           <div className="lg:col-span-1 space-y-6">
-            <Card className="border-green-100 shadow-lg">
+            <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-green-50 dark:from-gray-800 dark:to-green-950/20">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Search className="w-5 h-5 text-green-600" />
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
+                    <Search className="w-5 h-5 text-white" />
+                  </div>
                   Analysis Setup
                 </CardTitle>
+                <CardDescription>Upload a clear photo of the affected plant</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
 
-
-
-                {/* Upload Area */}
+                {/* Upload Area with Enhanced Styling */}
                 <div
-                  className={`relative border-2 border-dashed rounded-xl p-6 transition-all duration-200 ease-in-out text-center cursor-pointer
-                    ${dragActive ? "border-green-500 bg-green-50 dark:bg-green-900/20" : "border-muted-foreground/25 hover:border-green-400 hover:bg-accent/50"}
-                    ${preview ? "border-solid border-green-200 bg-green-50/50" : ""}
+                  className={`relative border-2 border-dashed rounded-2xl p-6 transition-all duration-200 ease-in-out text-center cursor-pointer
+                    ${dragActive ? "border-green-500 bg-green-50/50 dark:bg-green-900/20 scale-105" : "border-muted-foreground/25 hover:border-green-400 hover:bg-green-50/30"}
+                    ${preview ? "border-solid border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20" : ""}
                   `}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
@@ -211,31 +216,31 @@ const PestControl = () => {
                       <img
                         src={preview}
                         alt="Preview"
-                        className="w-full h-64 object-cover rounded-lg shadow-sm"
+                        className="w-full h-64 object-cover rounded-xl shadow-lg"
                       />
                       <Button
                         variant="destructive"
                         size="icon"
-                        className="absolute -top-2 -right-2 h-8 w-8 rounded-full shadow-md"
+                        className="absolute -top-3 -right-3 h-10 w-10 rounded-full shadow-lg hover:scale-110 transition-transform"
                         onClick={(e) => {
                           e.stopPropagation();
                           clearSelection();
                         }}
                       >
-                        <X className="w-4 h-4" />
+                        <X className="w-5 h-5" />
                       </Button>
                     </div>
                   ) : (
                     <div className="py-8 space-y-4">
-                      <div className="w-16 h-16 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mx-auto">
-                        <Upload className="w-8 h-8 text-green-600 dark:text-green-400" />
+                      <div className="w-20 h-20 bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                        <Upload className="w-10 h-10 text-white" />
                       </div>
                       <div>
-                        <p className="font-medium text-foreground">
+                        <p className="font-semibold text-foreground text-lg">
                           Click or drag image here
                         </p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Supports JPG, PNG, WEBP
+                        <p className="text-sm text-muted-foreground mt-2">
+                          Supports JPG, PNG, WEBP (Max 10MB)
                         </p>
                       </div>
                     </div>
@@ -243,19 +248,18 @@ const PestControl = () => {
                 </div>
 
                 <Button
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
-                  size="lg"
+                  className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white text-lg font-semibold shadow-lg"
                   disabled={!file || loading}
                   onClick={analyzeImage}
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                       Analyzing...
                     </>
                   ) : (
                     <>
-                      <Sprout className="w-4 h-4 mr-2" />
+                      <Sprout className="w-5 h-5 mr-2" />
                       Diagnose Plant
                     </>
                   )}
@@ -290,36 +294,47 @@ const PestControl = () => {
             ) : result ? (
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 {/* Main Diagnosis Card */}
-                <Card className={`border-l-4 shadow-md ${result.class.toLowerCase().includes("healthy")
-                  ? "border-l-green-500"
-                  : "border-l-red-500"
+                <Card className={`border-0 shadow-2xl ${result.class.toLowerCase().includes("healthy")
+                  ? "bg-gradient-to-br from-white to-green-50 dark:from-green-950/20 dark:to-emerald-950/20"
+                  : "bg-gradient-to-br from-white to-orange-50 dark:from-orange-950/20 dark:to-amber-950/20"
                   }`}>
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div>
-                        <CardTitle className="text-2xl flex items-center gap-2">
+                        <CardTitle className="text-3xl flex items-center gap-3 mb-3">
                           {result.class.toLowerCase().includes("healthy") ? (
-                            <CheckCircle2 className="w-6 h-6 text-green-500" />
+                            <div className="w-14 h-14 bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                              <CheckCircle2 className="w-7 h-7 text-white" />
+                            </div>
                           ) : (
-                            <AlertTriangle className="w-6 h-6 text-red-500" />
+                            <div className="w-14 h-14 bg-gradient-to-br from-orange-600 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg">
+                              <AlertTriangle className="w-7 h-7 text-white" />
+                            </div>
                           )}
-                          {result.class.replace(/_/g, " ").replace("___", " - ")}
+                          <span className={result.class.toLowerCase().includes("healthy")
+                            ? "bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent"
+                            : "bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent"}>
+                            {result.class.replace(/_/g, " ").replace("___", " - ")}
+                          </span>
                         </CardTitle>
                         <CardDescription className="mt-2 text-base">
                           {result.message}
                         </CardDescription>
+                        {result.confidence && (
+                          <div className="flex items-center gap-2 mt-4">
+                            <Badge className={`text-sm px-3 py-1 ${result.class.toLowerCase().includes("healthy")
+                              ? "bg-gradient-to-r from-green-600 to-emerald-600"
+                              : "bg-gradient-to-r from-orange-600 to-amber-600"} text-white border-0 shadow-md`}>
+                              {result.confidence.toFixed(1)}% Confidence
+                            </Badge>
+                          </div>
+                        )}
                       </div>
-                      <Badge
-                        variant={result.confidence > 70 ? "default" : "secondary"}
-                        className="text-lg px-3 py-1"
-                      >
-                        {result.confidence.toFixed(1)}% Confidence
-                      </Badge>
                     </div>
                   </CardHeader>
 
                   {/* Top 3 Predictions (if confidence is low/medium) */}
-                  {result.confidence < 85 && (
+                  {result.confidence < 0.85 && ( // Changed from 85 to 0.85 to match typical confidence values (0-1)
                     <CardContent className="pb-2">
                       <div className="bg-muted/50 p-3 rounded-lg text-sm">
                         <p className="font-medium mb-2 text-muted-foreground">Alternative Possibilities:</p>

@@ -46,7 +46,7 @@ const PlanningConsultation = () => {
   ];
 
   const [availableDates, setAvailableDates] = useState<string[]>([]);
-  
+
   useEffect(() => {
     // Generate next 14 days as available dates
     const dates: string[] = [];
@@ -77,7 +77,7 @@ const PlanningConsultation = () => {
 
     setBookingConfirmed(true);
     setIsBookingOpen(false);
-    
+
     // Reset after 3 seconds
     setTimeout(() => {
       setBookingConfirmed(false);
@@ -89,20 +89,30 @@ const PlanningConsultation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="w-full px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Farm Planning & Expert Consultation</h1>
+    <div className="min-h-screen bg-gradient-to-br from-green-50/50 via-emerald-50/30 to-teal-50/50 dark:from-green-950/10 dark:via-emerald-950/10 dark:to-teal-950/10">
+      <div className="w-full px-4 py-8 max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8 text-center md:text-left">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-950/30 rounded-full mb-4">
+            <Users className="w-4 h-4 text-green-600" />
+            <span className="text-sm font-medium text-green-900 dark:text-green-100">Expert Guidance</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500 bg-clip-text text-transparent">
+            Farm Planning & Expert Consultation
+          </h1>
           <p className="text-muted-foreground text-lg">
             Plan your farm activities and book consultations with agricultural experts
           </p>
         </div>
 
         {/* Farm Details Form */}
-        <Card className="mb-8">
+        <Card className="mb-8 border-0 shadow-xl bg-gradient-to-br from-white to-green-50 dark:from-gray-800 dark:to-green-950/20 hover:shadow-2xl transition-shadow">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5" /> Farm Details
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
+                <MapPin className="h-5 w-5 text-white" />
+              </div>
+              Farm Details
             </CardTitle>
             <CardDescription>Enter your farm information for planning and consultations</CardDescription>
           </CardHeader>
@@ -188,7 +198,7 @@ const PlanningConsultation = () => {
               </div>
             </div>
             <div className="mt-6 flex justify-end">
-              <Button size="lg">Save Farm Details</Button>
+              <Button size="lg" className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg">Save Farm Details</Button>
             </div>
           </CardContent>
         </Card>
@@ -207,7 +217,7 @@ const PlanningConsultation = () => {
               <CardContent>
                 <div className="grid gap-4">
                   {experts.map((expert) => (
-                    <Card key={expert.id} className="p-4 hover:shadow-md transition-shadow">
+                    <Card key={expert.id} className="p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 bg-gradient-to-br from-white to-green-50/30 dark:from-gray-800 dark:to-green-950/10">
                       <div className="flex items-start justify-between mb-3">
                         <div>
                           <h3 className="font-semibold text-lg">{expert.name}</h3>
@@ -223,13 +233,13 @@ const PlanningConsultation = () => {
                             </span>
                           </div>
                         </div>
-                        <Badge variant="secondary" className="ml-2">{expert.specialization}</Badge>
+                        <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800">{expert.specialization}</Badge>
                       </div>
                       <Dialog open={isBookingOpen && selectedExpert === expert.id} onOpenChange={setIsBookingOpen}>
                         <DialogTrigger asChild>
-                          <Button 
-                            variant="default" 
-                            className="w-full"
+                          <Button
+                            variant="default"
+                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-md"
                             onClick={() => setSelectedExpert(expert.id)}
                           >
                             Book Consultation

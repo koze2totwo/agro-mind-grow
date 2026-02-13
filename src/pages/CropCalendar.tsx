@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Calendar as CalIcon, Plus, ChevronLeft, ChevronRight, Check, Trash2 } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, addMonths, format, isSameMonth, isToday } from "date-fns";
- 
+
 
 const CropCalendar = () => {
   // Simplified: no filters/overview/weather blocks
@@ -38,7 +38,7 @@ const CropCalendar = () => {
   }
 
   function saveTasks(cropName: string | undefined, tasks: CalendarTask[]) {
-    try { localStorage.setItem(storageKey(cropName), JSON.stringify(tasks)); } catch {}
+    try { localStorage.setItem(storageKey(cropName), JSON.stringify(tasks)); } catch { }
   }
 
   const [currentMonthDate, setCurrentMonthDate] = useState<Date>(startOfMonth(new Date()));
@@ -121,68 +121,83 @@ const CropCalendar = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      
-      <div className="w-full px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Crop Calendar & Planning</h1>
+    <div className="min-h-screen bg-gradient-to-br from-green-50/50 via-emerald-50/30 to-teal-50/50 dark:from-green-950/10 dark:via-emerald-950/10 dark:to-teal-950/10">
+
+      <div className="w-full px-4 py-8 max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8 text-center md:text-left">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-950/30 rounded-full mb-4">
+            <CalIcon className="w-4 h-4 text-green-600" />
+            <span className="text-sm font-medium text-green-900 dark:text-green-100">Smart Planning</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500 bg-clip-text text-transparent">
+            Crop Calendar & Planning
+          </h1>
           <p className="text-muted-foreground text-lg">
             Plan your farming activities with seasonal crop schedules
           </p>
         </div>
 
-        {/* Simplified page: only the scheduler remains */}
-
         {/* Crop Scheduler (Monthly) */}
-        <Card className="mb-8">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-            <CardTitle className="flex items-center gap-2">
-              <CalIcon className="h-5 w-5" />
+        <Card className="mb-8 border-0 shadow-xl bg-gradient-to-br from-white to-green-50 dark:from-gray-800 dark:to-green-950/20 hover:shadow-2xl transition-shadow">
+          <CardHeader>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <CardTitle className="flex items-center gap-2 text-2xl">
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
+                    <CalIcon className="h-5 w-5 text-white" />
+                  </div>
                   Monthly Crop Scheduler
-            </CardTitle>
+                </CardTitle>
                 <CardDescription>Plan irrigation, fertilization, harvest and more by day</CardDescription>
               </div>
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="icon" onClick={() => setCurrentMonthDate(addMonths(currentMonthDate, -1))}><ChevronLeft className="h-4 w-4" /></Button>
-                <div className="text-sm font-medium w-36 text-center">{format(currentMonthDate, 'MMMM yyyy')}</div>
+                <div className="text-sm font-semibold w-36 text-center px-3 py-2 bg-green-100 dark:bg-green-950/30 rounded-lg">{format(currentMonthDate, 'MMMM yyyy')}</div>
                 <Button variant="outline" size="icon" onClick={() => setCurrentMonthDate(addMonths(currentMonthDate, 1))}><ChevronRight className="h-4 w-4" /></Button>
-                <Button onClick={() => openNewTask(new Date())} className="ml-2"><Plus className="h-4 w-4 mr-2" />Add Task</Button>
+                <Button onClick={() => openNewTask(new Date())} className="ml-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg"><Plus className="h-4 w-4 mr-2" />Add Task</Button>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-                      <div>
-                {/* Weekday headers */}
-                <div className="grid grid-cols-7 text-xs text-muted-foreground mb-2">
-                  {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => (<div key={d} className="text-center">{d}</div>))}
-                </div>
-                {/* Calendar grid */}
-                <div className="grid grid-cols-7 gap-1">
-                  {monthMatrix.flat().map((day, idx) => {
-                    const dateISO = format(day, 'yyyy-MM-dd');
-                    const ds = cropTasks.filter(t => t.dateISO === dateISO);
-                    const muted = !isSameMonth(day, currentMonthDate);
-                    return (
-                      <div key={idx} className={`min-h-[110px] p-2 border rounded hover:bg-accent/30 cursor-pointer ${muted ? 'opacity-50' : ''}`} onClick={() => openNewTask(day)}>
-                        <div className={`text-xs mb-1 ${isToday(day) ? 'font-semibold text-primary' : ''}`}>{format(day, 'd')}</div>
-                        <div className="space-y-1">
-                          {ds.slice(0,3).map(task => (
-                            <div key={task.id} className={`px-2 py-1 rounded text-[11px] flex items-center justify-between ${task.done ? 'bg-green-100 text-green-800' : 'bg-muted text-foreground'}`} onClick={(e) => { e.stopPropagation(); openEditTask(task); }}>
-                              <span className="truncate mr-2">{task.title}</span>
-                              {task.done && <Check className="h-3 w-3" />}
-                            </div>
-                          ))}
-                          {ds.length > 3 && (
-                            <div className="text-[11px] text-muted-foreground">+{ds.length - 3} more</div>
-                          )}
+            <div>
+              {/* Weekday headers */}
+              <div className="grid grid-cols-7 text-xs font-semibold text-muted-foreground mb-3 px-1">
+                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => (<div key={d} className="text-center py-2">{d}</div>))}
+              </div>
+              {/* Calendar grid */}
+              <div className="grid grid-cols-7 gap-2">
+                {monthMatrix.flat().map((day, idx) => {
+                  const dateISO = format(day, 'yyyy-MM-dd');
+                  const ds = cropTasks.filter(t => t.dateISO === dateISO);
+                  const muted = !isSameMonth(day, currentMonthDate);
+                  return (
+                    <div
+                      key={idx}
+                      className={`min-h-[110px] p-2 bg-gradient-to-br from-white to-green-50/30 dark:from-gray-800 dark:to-green-950/10 border ${isToday(day) ? 'border-green-500 shadow-lg ring-2 ring-green-200' : 'border-green-100 dark:border-green-900'} rounded-xl hover:shadow-xl hover:border-green-400 dark:hover:border-green-600 hover:scale-105 cursor-pointer transition-all duration-200 ${muted ? 'opacity-50' : ''}`}
+                      onClick={() => openNewTask(day)}
+                    >
+                      <div className={`text-xs mb-2 font-semibold ${isToday(day) ? 'text-green-600 text-base' : 'text-muted-foreground'}`}>{format(day, 'd')}</div>
+                      <div className="space-y-1">
+                        {ds.slice(0, 3).map(task => (
+                          <div
+                            key={task.id}
+                            className={`px-2 py-1 rounded-lg text-[11px] flex items-center justify-between hover:scale-105 transition-transform ${task.done ? 'bg-gradient-to-r from-green-200 to-emerald-200 text-green-900 border border-green-400' : 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-300'}`}
+                            onClick={(e) => { e.stopPropagation(); openEditTask(task); }}
+                          >
+                            <span className="truncate mr-2 font-medium">{task.title}</span>
+                            {task.done && <Check className="h-3 w-3" />}
+                          </div>
+                        ))}
+                        {ds.length > 3 && (
+                          <div className="text-[11px] text-muted-foreground font-medium">+{ds.length - 3} more</div>
+                        )}
                       </div>
-                      </div>
-                    );
-                  })}
                     </div>
-                </div>
+                  );
+                })}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -206,7 +221,7 @@ const CropCalendar = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {['Irrigation','Fertilization','Weeding','Pest control','Sowing','Harvest','Other'].map((t) => (
+                      {['Irrigation', 'Fertilization', 'Weeding', 'Pest control', 'Sowing', 'Harvest', 'Other'].map((t) => (
                         <SelectItem key={t} value={t}>{t}</SelectItem>
                       ))}
                     </SelectContent>
@@ -224,11 +239,11 @@ const CropCalendar = () => {
             </div>
             <DialogFooter>
               {editId && (
-                <Button variant="destructive" onClick={() => { const t = loadTasks(activeCropForSchedule).find(x=>x.id===editId); if (t) { deleteTask(t); setIsOpen(false);} }}>
+                <Button variant="destructive" onClick={() => { const t = loadTasks(activeCropForSchedule).find(x => x.id === editId); if (t) { deleteTask(t); setIsOpen(false); } }}>
                   <Trash2 className="h-4 w-4 mr-2" /> Delete
                 </Button>
               )}
-              <Button onClick={upsertTask}>{editId ? 'Save' : 'Add Task'}</Button>
+              <Button onClick={upsertTask} className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white">{editId ? 'Save' : 'Add Task'}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

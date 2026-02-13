@@ -37,7 +37,7 @@ const KnowledgeBase = () => {
     },
     {
       title: "Drip Irrigation System Setup",
-      category: "Water Management", 
+      category: "Water Management",
       author: "Prof. Anil Verma",
       readTime: "25 min watch",
       views: 8900,
@@ -107,7 +107,7 @@ const KnowledgeBase = () => {
       category: "Equipment Subsidy",
       amount: "40-50% subsidy",
       beneficiaries: "Small & Marginal Farmers",
-      status: "Active", 
+      status: "Active",
       deadline: "March 31, 2024",
       description: "Subsidy on purchase of agricultural equipment",
       eligibility: ["Small/Marginal farmers", "First-time buyers", "Valid land records"],
@@ -216,10 +216,17 @@ const KnowledgeBase = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="w-full px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Knowledge Base & Schemes</h1>
+    <div className="min-h-screen bg-gradient-to-br from-green-50/50 via-emerald-50/30 to-blue-50/40 dark:from-green-950/10 dark:via-emerald-950/10 dark:to-blue-950/10">
+      <div className="w-full px-4 py-8 max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8 text-center md:text-left">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-950/30 rounded-full mb-4 animate-fade-in">
+            <BookOpen className="w-4 h-4 text-green-600 animate-pulse" />
+            <span className="text-sm font-medium text-green-900 dark:text-green-100">Learn & Grow</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-600 via-emerald-500 to-blue-500 bg-clip-text text-transparent animate-fade-in">
+            Knowledge Base & Schemes
+          </h1>
           <p className="text-muted-foreground text-lg">
             Learn farming techniques and access government schemes
           </p>
@@ -401,7 +408,7 @@ const KnowledgeBase = () => {
                             ))}
                           </ul>
                         </div>
-                        
+
                         <div>
                           <h4 className="font-medium text-sm mb-2 flex items-center gap-1">
                             <FileText className="h-3 w-3" />
@@ -416,7 +423,7 @@ const KnowledgeBase = () => {
                             ))}
                           </ul>
                         </div>
-                        
+
                         <div>
                           <h4 className="font-medium text-sm mb-2 flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
@@ -465,7 +472,7 @@ const KnowledgeBase = () => {
                   <p className="text-xs text-muted-foreground">Active schemes available</p>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Beneficiaries</CardTitle>
@@ -476,7 +483,7 @@ const KnowledgeBase = () => {
                   <p className="text-xs text-muted-foreground">Farmers benefited</p>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Amount Disbursed</CardTitle>
@@ -487,7 +494,7 @@ const KnowledgeBase = () => {
                   <p className="text-xs text-muted-foreground">In current fiscal year</p>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">My Applications</CardTitle>
