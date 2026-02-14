@@ -1,0 +1,10 @@
+# Vercel-specific requirements (CPU only for smaller size)
+--find-links https://download.pytorch.org/whl/torch_stable.html
+
+torch==2.0.0+cpu
+torchvision==0.15.1+cpu
+numpy>=1.21.0
+Pillow>=9.0.0
+python-multipart>=0.0.20
+fastapi
+uvicorn
