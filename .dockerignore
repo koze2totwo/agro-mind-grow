@@ -1,0 +1,36 @@
+# Node modules
+node_modules
+npm-debug.log*
+
+# Build output
+dist
+build
+
+# Development
+.env.local
+.env.development.local
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backend
+backend
+
+# Documentation
+*.md
+report
+
+# Test files
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx

@@ -1,0 +1,30 @@
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv
+env
+ENV
+
+# IDE
+.vscode
+.idea
+
+# Git
+.git
+.gitignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+*.md
+
+# Test files
+*_test.py
+test_*.py

@@ -1,0 +1,55 @@
+# Docker Compose - Local Development
+# Single command to run entire stack: docker-compose up
+
+version: '3.8'
+
+services:
+  # Backend Service - Python FastAPI + ML Model
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: agromind-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount code for hot reload in development
+      - ./backend:/app
+      # Preserve Python packages
+      - backend_venv:/app/venv
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - agromind-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Service - React + Vite (Dev Server)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: agromind-frontend
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mount code for hot reload
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - agromind-network
+
+networks:
+  agromind-network:
+    driver: bridge
+
+volumes:
+  backend_venv:

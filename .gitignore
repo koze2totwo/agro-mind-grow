@@ -6,6 +6,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+vite.log
+bun.lockb
 
 # Environment variables
 .env
@@ -86,3 +88,7 @@ MANIFEST
 *.njsproj
 *.sln
 *.sw?
+
+# Node installers and local setups
+node-*.zip
+local-node/
