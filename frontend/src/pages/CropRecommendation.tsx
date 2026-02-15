@@ -1,338 +1,317 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Sprout, Droplets, Sun, MapPin, TrendingUp, Clock, Sparkles } from "lucide-react";
+import { Sprout, Sun, MapPin, TrendingUp, CloudRain, Thermometer, Wind, AlertCircle, Loader2, Search, Check, BookOpen, DollarSign } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { motion, AnimatePresence } from "framer-motion";
+
+// API Base URL
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:7860";
 
 const CropRecommendation = () => {
-    const [soilType, setSoilType] = useState("");
-    const [weather, setWeather] = useState("");
-    const [season, setSeason] = useState("");
-    const [location, setLocation] = useState("");
+    // State
+    const [city, setCity] = useState("");
+    const [weatherData, setWeatherData] = useState<any>(null);
+    const [weatherLoading, setWeatherLoading] = useState(false);
+    const [weatherError, setWeatherError] = useState("");
+
+    // Hidden Soil State (Auto-Inferred)
+    const [soilData] = useState({ N: 50, P: 50, K: 50, ph: 6.5 });
+
     const [recommendations, setRecommendations] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
     const [showResults, setShowResults] = useState(false);
 
-    // Crop database with recommendations
-    const cropDatabase = [
-        {
-            name: "Rice",
-            icon: "🌾",
-            soils: ["Black Soil", "Clay"],
-            weathers: ["Rainy", "Humid"],
-            seasons: ["Kharif (Monsoon)"],
-            growthPeriod: "120-150 days",
-            waterNeed: "High",
-            yield: "4-6 tons/hectare",
-            confidence: 95,
-            description: "Ideal for waterlogged conditions with high rainfall"
-        },
-        {
-            name: "Wheat",
-            icon: "🌾",
-            soils: ["Loam", "Clay"],
-            weathers: ["Moderate", "Cold"],
-            seasons: ["Rabi (Winter)"],
-            growthPeriod: "120-130 days",
-            waterNeed: "Medium",
-            yield: "3-4 tons/hectare",
-            confidence: 92,
-            description: "Best suited for cool climate with moderate irrigation"
-        },
-        {
-            name: "Cotton",
-            icon: "🌿",
-            soils: ["Black Soil", "Red Soil"],
-            weathers: ["Hot & Dry", "Moderate"],
-            seasons: ["Kharif (Monsoon)"],
-            growthPeriod: "150-180 days",
-            waterNeed: "Medium",
-            yield: "2-3 tons/hectare",
-            confidence: 88,
-            description: "Thrives in warm climate with well-drained soil"
-        },
-        {
-            name: "Sugarcane",
-            icon: "🎋",
-            soils: ["Black Soil", "Red Soil", "Loam"],
-            weathers: ["Humid", "Hot & Dry"],
-            seasons: ["Kharif (Monsoon)", "Rabi (Winter)", "Zaid (Summer)"],
-            growthPeriod: "300-360 days",
-            waterNeed: "High",
-            yield: "70-80 tons/hectare",
-            confidence: 90,
-            description: "Year-round crop requiring abundant water and warm climate"
-        },
-        {
-            name: "Maize",
-            icon: "🌽",
-            soils: ["Loam", "Sandy", "Red Soil"],
-            weathers: ["Moderate", "Hot & Dry"],
-            seasons: ["Kharif (Monsoon)", "Rabi (Winter)"],
-            growthPeriod: "80-110 days",
-            waterNeed: "Medium",
-            yield: "3-5 tons/hectare",
-            confidence: 87,
-            description: "Versatile crop adaptable to various soil types"
-        },
-        {
-            name: "Pulses (Dal)",
-            icon: "🫘",
-            soils: ["Loam", "Black Soil", "Red Soil"],
-            weathers: ["Moderate", "Cold"],
-            seasons: ["Rabi (Winter)", "Zaid (Summer)"],
-            growthPeriod: "90-120 days",
-            waterNeed: "Low",
-            yield: "1-2 tons/hectare",
-            confidence: 85,
-            description: "Nitrogen-fixing crop suitable for diverse conditions"
-        },
-        {
-            name: "Vegetables",
-            icon: "🥬",
-            soils: ["Loam", "Sandy"],
-            weathers: ["Moderate", "Cold"],
-            seasons: ["Rabi (Winter)", "Zaid (Summer)"],
-            growthPeriod: "60-90 days",
-            waterNeed: "Medium",
-            yield: "15-25 tons/hectare",
-            confidence: 89,
-            description: "Quick-growing crops with high market value"
-        },
-        {
-            name: "Groundnut",
-            icon: "🥜",
-            soils: ["Sandy", "Loam"],
-            weathers: ["Hot & Dry", "Moderate"],
-            seasons: ["Kharif (Monsoon)", "Zaid (Summer)"],
-            growthPeriod: "100-130 days",
-            waterNeed: "Medium",
-            yield: "2-3 tons/hectare",
-            confidence: 86,
-            description: "Oilseed crop preferring well-drained sandy soils"
+    // Handlers
+    const getRecommendations = async (weatherOverride: any = null) => {
+        setLoading(true);
+        setError("");
+        setShowResults(false);
+
+        try {
+            // Handle both event (onClick) and direct data pass (auto-fetch)
+            // If weatherOverride has 'data' property, use it. Otherwise rely on state.
+            let activeWeather = weatherData;
+            if (weatherOverride && weatherOverride.data) {
+                activeWeather = weatherOverride;
+            }
+
+            const temp = activeWeather?.data?.temperature || 25.0;
+            const humidity = activeWeather?.data?.humidity || 50.0;
+            const rainfall = activeWeather?.data?.rainfall || 100.0;
+
+            const payload = {
+                ...soilData,
+                city: city || null,
+                temperature: temp,
+                humidity: humidity,
+                rainfall: rainfall
+            };
+
+            const response = await fetch(`${API_URL}/recommend`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.detail || "Failed to get recommendations");
+
+            // Transform backend response
+            const best = {
+                name: data.recommended_crop,
+                scientificName: data.scientific_name,
+                confidence: data.confidence,
+                match: true,
+                summary: data.executive_summary || "Highly recommended for current conditions.",
+                reasoning: Array.isArray(data.reasoning) ? data.reasoning : [data.reason],
+                tips: Array.isArray(data.farming_tips) ? data.farming_tips : [data.advice],
+                market: data.market_outlook,
+                source: data.source
+            };
+
+            const alts = data.alternatives?.map((alt: any) => ({
+                name: alt.crop,
+                confidence: alt.confidence,
+                match: false
+            })) || [];
+
+            setRecommendations([best, ...alts]);
+            setShowResults(true);
+
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
         }
-    ];
-
-    const handleRecommendation = () => {
-        if (!soilType || !weather || !season) {
-            return;
-        }
-
-        // Filter crops based on user inputs
-        const filtered = cropDatabase.filter(crop => {
-            const soilMatch = crop.soils.includes(soilType);
-            const weatherMatch = crop.weathers.includes(weather);
-            const seasonMatch = crop.seasons.includes(season);
-
-            // Calculate match score
-            let matchScore = 0;
-            if (soilMatch) matchScore += 40;
-            if (weatherMatch) matchScore += 35;
-            if (seasonMatch) matchScore += 25;
-
-            return matchScore >= 60; // At least 2 criteria must match
-        });
-
-        // Sort by confidence
-        const sorted = filtered.sort((a, b) => b.confidence - a.confidence);
-        setRecommendations(sorted);
-        setShowResults(true);
     };
 
-    const handleReset = () => {
-        setSoilType("");
-        setWeather("");
-        setSeason("");
-        setLocation("");
+    const fetchWeather = async () => {
+        if (!city) {
+            setWeatherError("Please enter a city name.");
+            return;
+        }
+        setWeatherLoading(true);
+        setWeatherError("");
+        setWeatherData(null);
+
+        // Clear previous results instantly
         setRecommendations([]);
         setShowResults(false);
+
+        try {
+            const response = await fetch(`${API_URL}/weather?city=${city}`);
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.detail || "Failed to fetch weather");
+            setWeatherData(data);
+
+        } catch (err: any) {
+            setWeatherError(err.message);
+        } finally {
+            setWeatherLoading(false);
+        }
     };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50/50 via-emerald-50/30 to-blue-50/40 dark:from-green-950/10 dark:via-emerald-950/10 dark:to-blue-950/10">
             <div className="w-full px-4 py-8 max-w-7xl mx-auto">
-                {/* Header */}
+
+                {/* Header (Matches Weather.tsx style) */}
                 <div className="mb-8 text-center md:text-left">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-950/30 rounded-full mb-4 animate-fade-in">
-                        <Sprout className="w-4 h-4 text-green-600 animate-pulse" />
-                        <span className="text-sm font-medium text-green-900 dark:text-green-100">AI-Powered Recommendations</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-950/30 rounded-full mb-4">
+                        <Sprout className="w-4 h-4 text-green-600" />
+                        <span className="text-sm font-medium text-green-900 dark:text-green-100">AI Crop Advisor</span>
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-600 via-emerald-500 to-blue-500 bg-clip-text text-transparent animate-fade-in">
-                        Crop Recommendation System
+                    <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500 bg-clip-text text-transparent">
+                        Intelligent Crop Recommendation
                     </h1>
                     <p className="text-muted-foreground text-lg">
-                        Get intelligent crop suggestions based on your soil, weather, and season
+                        Data-driven crop selection based on hyper-local weather and soil analysis.
                     </p>
                 </div>
 
-                {/* Input Form */}
-                <Card className="mb-8 border-0 shadow-xl bg-gradient-to-br from-white to-green-50 dark:from-gray-800 dark:to-green-950/20 hover:shadow-2xl transition-shadow">
+                {/* Search & Location (Matches Weather.tsx Card style) */}
+                <Card className="mb-8 border-0 shadow-xl bg-gradient-to-br from-white to-green-50 dark:from-gray-800 dark:to-green-950/20">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-2xl">
-                            <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
-                                <Sparkles className="h-5 w-5 text-white" />
+                        <CardTitle className="flex items-center gap-2 text-xl">
+                            <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
+                                <Search className="h-5 w-5 text-white" />
                             </div>
-                            Enter Your Farm Details
+                            Location Analysis
                         </CardTitle>
-                        <CardDescription>Provide information about your farming conditions</CardDescription>
+                        <CardDescription>Enter your farm's location to fetch real-time climate data</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Soil Type */}
-                            <div>
-                                <label className="text-sm font-medium mb-2 block flex items-center gap-2">
-                                    <MapPin className="w-4 h-4 text-green-600" />
-                                    Soil Type
-                                </label>
-                                <Select value={soilType} onValueChange={setSoilType}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select soil type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Loam">Loam Soil</SelectItem>
-                                        <SelectItem value="Clay">Clay Soil</SelectItem>
-                                        <SelectItem value="Sandy">Sandy Soil</SelectItem>
-                                        <SelectItem value="Red Soil">Red Soil</SelectItem>
-                                        <SelectItem value="Black Soil">Black Soil</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {/* Weather */}
-                            <div>
-                                <label className="text-sm font-medium mb-2 block flex items-center gap-2">
-                                    <Sun className="w-4 h-4 text-yellow-600" />
-                                    Weather Condition
-                                </label>
-                                <Select value={weather} onValueChange={setWeather}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select weather" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Hot & Dry">Hot & Dry</SelectItem>
-                                        <SelectItem value="Moderate">Moderate</SelectItem>
-                                        <SelectItem value="Cold">Cold</SelectItem>
-                                        <SelectItem value="Rainy">Rainy</SelectItem>
-                                        <SelectItem value="Humid">Humid</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {/* Season */}
-                            <div>
-                                <label className="text-sm font-medium mb-2 block flex items-center gap-2">
-                                    <Clock className="w-4 h-4 text-blue-600" />
-                                    Season
-                                </label>
-                                <Select value={season} onValueChange={setSeason}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select season" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Kharif (Monsoon)">Kharif (Monsoon) - Jun to Oct</SelectItem>
-                                        <SelectItem value="Rabi (Winter)">Rabi (Winter) - Nov to Mar</SelectItem>
-                                        <SelectItem value="Zaid (Summer)">Zaid (Summer) - Apr to Jun</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {/* Location */}
-                            <div>
-                                <label className="text-sm font-medium mb-2 block flex items-center gap-2">
-                                    <MapPin className="w-4 h-4 text-red-600" />
-                                    Location (Optional)
-                                </label>
+                        <div className="flex flex-col md:flex-row gap-4">
+                            <div className="flex-1">
                                 <Input
-                                    placeholder="Enter your city/state"
-                                    value={location}
-                                    onChange={(e) => setLocation(e.target.value)}
+                                    placeholder="Enter City Name (e.g. Pune, Nagpur)"
+                                    className="h-12 text-lg"
+                                    value={city}
+                                    onChange={(e) => setCity(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && fetchWeather()}
                                 />
                             </div>
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="flex gap-4 mt-6">
                             <Button
-                                onClick={handleRecommendation}
-                                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg flex-1"
-                                disabled={!soilType || !weather || !season}
+                                onClick={fetchWeather}
+                                disabled={weatherLoading}
+                                className="h-12 px-8 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white text-lg"
                             >
-                                <TrendingUp className="mr-2 h-4 w-4" />
-                                Get Recommendations
-                            </Button>
-                            <Button
-                                variant="outline"
-                                onClick={handleReset}
-                                className="border-2 border-green-600 text-green-700 hover:bg-green-50"
-                            >
-                                Reset
+                                {weatherLoading ? <Loader2 className="animate-spin mr-2" /> : <Sun className="mr-2 h-5 w-5" />}
+                                Fetch Data
                             </Button>
                         </div>
+                        {weatherError && <p className="text-red-500 mt-2 text-sm">{weatherError}</p>}
                     </CardContent>
                 </Card>
 
-                {/* Results */}
-                {showResults && (
-                    <div className="space-y-6 animate-fade-in">
-                        <h2 className="text-2xl font-bold flex items-center gap-2">
-                            <Sprout className="w-6 h-6 text-green-600" />
-                            Recommended Crops ({recommendations.length})
-                        </h2>
+                {/* Weather Data Panel (Only shows when available) */}
+                <AnimatePresence>
+                    {weatherData && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="mb-8"
+                        >
+                            <div className="flex items-center gap-2 mb-4 px-1">
+                                <MapPin className="h-5 w-5 text-green-600" />
+                                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">
+                                    Climate Data for <span className="text-slate-900 dark:text-white">{weatherData.location}</span>
+                                </h3>
+                            </div>
 
-                        {recommendations.length === 0 ? (
-                            <Card className="p-12 text-center border-0 shadow-lg bg-gradient-to-br from-white to-green-50">
-                                <p className="text-muted-foreground text-lg">
-                                    No crops match your current conditions. Try adjusting your selections.
-                                </p>
-                            </Card>
-                        ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {recommendations.map((crop, idx) => (
-                                    <Card
-                                        key={idx}
-                                        className="group border-0 shadow-lg bg-gradient-to-br from-white to-green-50/50 dark:from-gray-800 dark:to-green-950/20 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden animate-fade-in"
-                                        style={{ animationDelay: `${0.1 * idx}s` }}
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                                <Card className="bg-orange-50 dark:bg-orange-950/20 border-orange-100">
+                                    <CardContent className="p-4 flex items-center gap-4">
+                                        <div className="p-3 bg-orange-100 rounded-full text-orange-600"><Thermometer /></div>
+                                        <div>
+                                            <p className="text-sm text-muted-foreground">Temperature</p>
+                                            <p className="text-2xl font-bold">{weatherData.data.temperature}°C</p>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                                <Card className="bg-blue-50 dark:bg-blue-950/20 border-blue-100">
+                                    <CardContent className="p-4 flex items-center gap-4">
+                                        <div className="p-3 bg-blue-100 rounded-full text-blue-600"><CloudRain /></div>
+                                        <div>
+                                            <p className="text-sm text-muted-foreground">Rainfall</p>
+                                            <p className="text-2xl font-bold">{weatherData.data.rainfall}mm</p>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                                <Card className="bg-cyan-50 dark:bg-cyan-950/20 border-cyan-100">
+                                    <CardContent className="p-4 flex items-center gap-4">
+                                        <div className="p-3 bg-cyan-100 rounded-full text-cyan-600"><Wind /></div>
+                                        <div>
+                                            <p className="text-sm text-muted-foreground">Humidity</p>
+                                            <p className="text-2xl font-bold">{weatherData.data.humidity}%</p>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                                <div className="flex items-center justify-center">
+                                    <Button
+                                        onClick={getRecommendations}
+                                        disabled={loading}
+                                        className="w-full h-full min-h-[80px] text-xl bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-200"
                                     >
-                                        <CardHeader>
-                                            <div className="flex items-start justify-between mb-2">
-                                                <div className="text-5xl mb-2 group-hover:scale-110 transition-transform">
-                                                    {crop.icon}
-                                                </div>
-                                                <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
-                                                    {crop.confidence}% Match
+                                        {loading ? <Loader2 className="animate-spin mr-2" /> : <TrendingUp className="mr-2" />}
+                                        Analyze Crops
+                                    </Button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {error && (
+                    <Alert variant="destructive" className="mb-8">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertTitle>Analysis Failed</AlertTitle>
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                )}
+
+                {/* RESULTS SECTION */}
+                <AnimatePresence>
+                    {showResults && recommendations.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+                        >
+                            {/* Main Recommendation */}
+                            <Card className="lg:col-span-2 border-green-200 shadow-xl overflow-hidden">
+                                <div className="bg-green-600 p-6 text-white">
+                                    <div className="flex justify-between items-start">
+                                        <Badge className="bg-green-400/20 hover:bg-green-400/30 text-white border-0">Top Choice</Badge>
+                                        <span className="text-xs opacity-75">{recommendations[0].source}</span>
+                                    </div>
+                                    <h2 className="text-4xl font-bold mt-2">{recommendations[0].name}</h2>
+                                    <p className="italic opacity-90">{recommendations[0].scientificName}</p>
+                                    <p className="mt-4 text-lg font-medium opacity-95 leading-snug">
+                                        "{recommendations[0].summary}"
+                                    </p>
+                                </div>
+                                <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <h3 className="font-semibold flex items-center gap-2 mb-3 text-green-700">
+                                            <Check className="w-4 h-4" /> Why this crop?
+                                        </h3>
+                                        <ul className="space-y-2">
+                                            {recommendations[0].reasoning?.map((r: string, i: number) => (
+                                                <li key={i} className="text-sm text-slate-600 flex gap-2">
+                                                    <span className="text-green-500">•</span> {r}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold flex items-center gap-2 mb-3 text-blue-700">
+                                            <BookOpen className="w-4 h-4" /> Key Tips
+                                        </h3>
+                                        <ul className="space-y-2">
+                                            {recommendations[0].tips?.map((t: string, i: number) => (
+                                                <li key={i} className="text-sm text-slate-600 flex gap-2">
+                                                    <span className="text-blue-500">•</span> {t}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    {recommendations[0].market && (
+                                        <div className="md:col-span-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                            <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                                                <DollarSign className="w-4 h-4 text-amber-500" />
+                                                Market Outlook: <span className="font-normal text-slate-600">{recommendations[0].market}</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+
+                            {/* Alternatives */}
+                            <div className="space-y-4">
+                                <h3 className="font-semibold text-lg text-slate-800">Alternative Options</h3>
+                                {recommendations.slice(1).map((crop, idx) => (
+                                    <Card key={idx} className="hover:bg-slate-50 transition-colors cursor-default">
+                                        <CardContent className="p-4">
+                                            <div className="flex justify-between items-center mb-1">
+                                                <span className="font-bold text-lg text-slate-700">{crop.name}</span>
+                                                <Badge variant="outline" className="text-green-600 border-green-200">
+                                                    {crop.confidence}%
                                                 </Badge>
                                             </div>
-                                            <CardTitle className="text-xl group-hover:text-green-600 transition-colors">
-                                                {crop.name}
-                                            </CardTitle>
-                                            <CardDescription className="text-sm">
-                                                {crop.description}
-                                            </CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="space-y-3">
-                                            <div className="flex items-center gap-2 text-sm">
-                                                <Clock className="w-4 h-4 text-blue-600" />
-                                                <span className="font-medium">Growth:</span>
-                                                <span className="text-muted-foreground">{crop.growthPeriod}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-sm">
-                                                <Droplets className="w-4 h-4 text-cyan-600" />
-                                                <span className="font-medium">Water:</span>
-                                                <span className="text-muted-foreground">{crop.waterNeed}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-sm">
-                                                <TrendingUp className="w-4 h-4 text-green-600" />
-                                                <span className="font-medium">Yield:</span>
-                                                <span className="text-muted-foreground">{crop.yield}</span>
-                                            </div>
+                                            <p className="text-xs text-muted-foreground">Viable secondary option</p>
                                         </CardContent>
                                     </Card>
                                 ))}
                             </div>
-                        )}
-                    </div>
-                )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );

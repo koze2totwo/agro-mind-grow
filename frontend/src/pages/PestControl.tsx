@@ -123,7 +123,7 @@ const PestControl = () => {
     formData.append("file", file);
 
     // Use environment variable for API URL (production vs development)
-    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:7860";
 
     try {
       const response = await fetch(`${API_URL}/predict`, {

@@ -1,13 +1,16 @@
+fastapi
+uvicorn
+# ML Dependencies
 torch>=2.0.0
 torchvision>=0.15.0
 numpy>=1.21.0
 Pillow>=9.0.0
-matplotlib>=3.5.0
-pandas>=1.4.0
-scikit-learn>=1.0.0
-tqdm>=4.64.0
-opencv-python>=4.5.0
-efficientnet-pytorch>=0.7.1
+# Utilities
+python-dotenv
+httpx>=0.24.0
 python-multipart>=0.0.20
-fastapi
-uvicorn
+# AI Services
+google-generativeai
+httpx>=0.24.0
+python-dotenv
+google-generativeai

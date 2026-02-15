@@ -1,4 +1,9 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from dotenv import load_dotenv
+import warnings
+# Suppress warnings for cleaner logs
+warnings.filterwarnings("ignore")
+load_dotenv() # Load environment variables
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import torch
@@ -11,6 +16,7 @@ import os
 from pathlib import Path
 from disease_database import get_disease_info
 import numpy as np
+from gemini_service import gemini_service
 
 # Define Model Architecture (Must match train.py)
 class PlantDiseaseModel(nn.Module):
@@ -257,6 +263,93 @@ async def health_check():
         "model_loaded": model is not None,
         "device": str(DEVICE)
     }
+
+from weather_service import WeatherService
+from pydantic import BaseModel
+from typing import Optional
+
+# Initialize Services
+weather_service = WeatherService()
+
+class SoilData(BaseModel):
+    N: int
+    P: int
+    K: int
+    ph: float
+    city: Optional[str] = None
+    temperature: Optional[float] = None
+    humidity: Optional[float] = None
+    rainfall: Optional[float] = None
+
+@app.get("/weather")
+async def get_weather(city: str):
+    """
+    Fetch real-time weather for a city.
+    """
+    print(f"🌍 Fetching weather for city: {city}")
+    weather_data = await weather_service.get_weather_for_city(city)
+    
+    if "error" in weather_data:
+        raise HTTPException(status_code=404, detail=weather_data["error"])
+        
+    return weather_data
+
+@app.post("/recommend")
+async def recommend_crop(data: SoilData):
+    """
+    Get crop recommendations based on soil data.
+    Prioritizes Google Gemini (AI) for broad, accurate recommendations.
+    Falls back to local specific-crop model if AI fails.
+    """
+    
+    # 1. Handle Weather Data (Fetch if city provided)
+    weather_info = {}
+    weather_summary = {
+        "temperature": data.temperature,
+        "humidity": data.humidity,
+        "rainfall": data.rainfall
+    }
+    
+    if data.city:
+        print(f"🌍 Fetching weather for city: {data.city}")
+        weather_res = await weather_service.get_weather_for_city(data.city)
+        
+        if "data" in weather_res:
+            # Override inputs with real-time data
+            validated_weather = weather_res["data"]
+            data.temperature = validated_weather["temperature"]
+            data.humidity = validated_weather["humidity"]
+            data.rainfall = validated_weather["rainfall"]
+            
+            weather_summary = validated_weather
+            weather_info = {
+                "source": "Open-Meteo API",
+                "location": weather_res["location"],
+                "fetched_data": validated_weather
+            }
+        else:
+            weather_info = {"warning": f"Could not fetch weather for {data.city}. Using manual inputs."}
+
+    # 2. Validation
+    if data.temperature is None or data.humidity is None or data.rainfall is None:
+        raise HTTPException(status_code=400, detail="Temperature, Humidity, and Rainfall are required if City is not provided or not found.")
+
+    # 3. Strategy: Try Gemini First
+    print("🤖 Attempting AI Recommendation via Gemini...")
+    ai_result = await gemini_service.get_recommendation(
+        city=data.city or "Unknown Location",
+        weather_data=weather_summary,
+        soil_data={"N": data.N, "P": data.P, "K": data.K, "ph": data.ph}
+    )
+    
+    if "error" in ai_result:
+        print(f"⚠️ Gemini Failed: {ai_result.get('details', 'Unknown Error')}")
+        raise HTTPException(status_code=503, detail=f"AI Recommendation Service Unavailable: {ai_result.get('details')}")
+
+    print("✅ Gemini Recommendation Successful")
+    ai_result["source"] = "AI Analysis"
+    ai_result["weather_context"] = weather_info
+    return ai_result
 
 if __name__ == "__main__":
     import uvicorn

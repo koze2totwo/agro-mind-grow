@@ -42,7 +42,34 @@ The easiest way to run the project locally is using Docker.
 
 ---
 
-## ☁️ Deployment (DigitalOcean)
+## 🚀 Free Deployment Guide (Recommended)
+
+You can host this project for **100% Free** using a hybrid approach:
+1.  **Backend (AI)**: Hugging Face Spaces (Free CPU tier with 16GB RAM).
+2.  **Frontend (React)**: Vercel.
+
+### Step 1: Deploy Backend to Hugging Face
+1.  Create a **new Space** on [Hugging Face](https://huggingface.co/new-space).
+2.  Select **Docker** as the SDK.
+3.  Choose **Free** hardware (CPU Basic).
+4.  Cloning the repository:
+    *   Hugging Face will give you a git command. You can push your `backend` folder code there.
+    *   *Alternative*: Simply upload the files from `backend/` (including `Dockerfile` and `requirements.txt`) to the Space via the browser.
+5.  Wait for the "Building" status to turn **Green/Running**.
+6.  Copy the **Direct URL** of your space (found in the top right menu > Embed this space > Direct URL). It looks like: `https://username-space-name.hf.space`.
+
+### Step 2: Deploy Frontend to Vercel
+1.  Push this code to your **GitHub** repository.
+2.  Go to [Vercel](https://vercel.com) and "Add New Project".
+3.  Import your GitHub repository.
+4.  **Important**: Set the **Root Directory** to `frontend`.
+5.  **Environment Variables**:
+    *   Add `VITE_API_URL` and set it to your Hugging Face URL (e.g., `https://username-space-name.hf.space`).
+6.  Click **Deploy**.
+
+---
+
+## ☁️ Paid Deployment (DigitalOcean)
 
 This project is configured for easy deployment on a DigitalOcean Droplet using Docker.
 
